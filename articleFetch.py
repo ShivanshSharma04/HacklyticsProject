@@ -7,11 +7,11 @@ import json
 def getPaperText(tags: list[str])->str:
     """
     """
-    idList = fetchRelevantArticle(tags)
+    idList = fetchRelevantArticles(tags)
     articleJSON = getArticleJSON(idList)
     return getSectionText(articleJSON, "ABSTRACT")
 
-def fetchRelevantArticle(tags: list[str])->list[str]:
+def fetchRelevantArticles(tags: list[str])->list[str]:
     """
     Given a list of keywords, returns up to 1000 relevant article IDs
     """
@@ -21,7 +21,7 @@ def fetchRelevantArticle(tags: list[str])->list[str]:
     response = requests.get(url)
     return response.json()['esearchresult']['idlist']
 
-def getArticleJSON(idlist:list):
+def getArticleJSON(idlist:list)->dict:
     idIdx = 0
     while True:
         id = idlist[idIdx]
@@ -33,7 +33,7 @@ def getArticleJSON(idlist:list):
             continue
         return response.json()
 
-def getSectionText(articleJSON: dict, sectionID: str = "ABSTRACT"):
+def getSectionText(articleJSON: dict, sectionIDs: list[str] = ["ABSTRACT"], allText: bool = False):
     """
     Returns a section of a pubmed article section text.
     articleJSON: a JSON file retrieved from the pubmed restf API
@@ -43,8 +43,9 @@ def getSectionText(articleJSON: dict, sectionID: str = "ABSTRACT"):
     """
     sections = articleJSON["documents"][0]["passages"]
     outText = []
+    sectionIDs = set(sectionIDs)
     for section in sections:
-        if section["infons"]["section_type"] == sectionID:
+        if allText or section["infons"]["section_type"] in sectionIDs:
             outText.append(section["text"])
     return ' '.join(outText)
 
