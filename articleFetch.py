@@ -51,4 +51,4 @@ def getSectionText(articleJSON: dict, sectionIDs: list[str] = ["ABSTRACT"], allT
     return ' '.join(outText)
 
 
-print(getPaperText(["e-health", "diabetes"]))
+#print(getPaperText(["e-health", "diabetes"]))
