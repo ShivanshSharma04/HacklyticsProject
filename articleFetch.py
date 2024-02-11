@@ -10,7 +10,7 @@ def getPaperText(tags: list[str])->str:
     """
     idList = fetchRelevantArticles(tags)
     articleJSON, _ = getArticleJSON(idList)
-    return getSectionText(articleJSON, ["ABSTRACT"])
+    return getSectionText(articleJSON, ["ABSTRACT", "CONCL"])
 
 def fetchRelevantArticles(tags: list[str])->list[str]:
     """
