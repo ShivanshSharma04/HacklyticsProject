@@ -21,12 +21,14 @@ def fetchAllArticleIDs(numArticles)->list[str]:
 def main():
     articleList = fetchAllArticleIDs(100)
     outList = []
-    for articleID in articleList:
-        articleJSON = articleFetch.getArticleJSON(articleID)
+    for idx in range(len(articleList)):
+        articleJSON, idx = articleFetch.getArticleJSON(articleList)
         allText = articleFetch.getSectionText(articleJSON, ["ABSTRACT"], True)
         abstractText = articleFetch.getSectionText(articleJSON, ["ABSTRACT"], False)
         outList.append([allText, abstractText])
-        time.sleep(0.34) # for rate limits
     with open('summarizedata.csv', 'w') as f: #turn list into csv
         write = csv.writer(f)
         write.writerows(outList)
+
+if __name__ == "__main__":
+    main()

@@ -3,6 +3,7 @@ Medical Article Retriever
 """
 import requests
 import json
+import time
 
 def getPaperText(tags: list[str])->str:
     """
@@ -21,7 +22,7 @@ def fetchRelevantArticles(tags: list[str])->list[str]:
     response = requests.get(url)
     return response.json()['esearchresult']['idlist']
 
-def getArticleJSON(idlist:list)->dict:
+def getArticleJSON(idlist:list)->(dict, int):
     idIdx = 0
     while True:
         id = idlist[idIdx]
@@ -29,9 +30,9 @@ def getArticleJSON(idlist:list)->dict:
         response = requests.get(api_url)
         if response.status_code == 404:
             idIdx += 1 #if article ID is not in open access database, continue to next id
-            
+            #time.sleep(0.) #for rate limits
             continue
-        return response.json()
+        return response.json(), idIdx
 
 def getSectionText(articleJSON: dict, sectionIDs: list[str] = ["ABSTRACT"], allText: bool = False):
     """
